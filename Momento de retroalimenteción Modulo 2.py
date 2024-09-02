@@ -8,11 +8,9 @@ data = data.drop(columns = ['region'])
 data['sex'] = data['sex'].map({'male': 1, 'female': 0})
 data['smoker'] = data['smoker'].map({'yes': 1, 'no': 0})
 
-# Definir características (X) y etiquetas (y)
 X = data.drop('charges', axis=1).values
 y = data['charges'].values
 
-# Dividir los datos en entrenamiento y prueba
 np.random.seed(0)
 indices = np.random.permutation(len(X))
 train_size = int(0.8 * len(X))
@@ -21,7 +19,6 @@ test_indices = indices[train_size:]
 
 X_train, y_train = X[train_indices], y[train_indices]
 
-# Función de distancia euclidiana para calcular el vecino más cercano
 def euclidean_distance(x1, x2):
     return np.sqrt(np.sum((x1 - x2) ** 2))
 
@@ -30,10 +27,8 @@ def predict(X_train, y_train, x_test):
     min_index = np.argmin(distances)
     return y_train[min_index]
 
-# Función de predicción desde la interfaz gráfica
 def make_prediction():
     try:
-        # Obtener los valores de entrada del usuario
         inputs = [
             float(entry_age.get()),
             1 if var_sex.get() == 'male' else 0,
@@ -50,7 +45,6 @@ def make_prediction():
     except ValueError:
         messagebox.showerror("Error", "Por favor, ingresa valores válidos en todos los campos.")
 
-# Configuración de la interfaz gráfica con tkinter
 root = tk.Tk()
 root.title("Predicción de Cargos Médicos")
 
