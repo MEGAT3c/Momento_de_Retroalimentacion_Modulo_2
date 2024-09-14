@@ -3,8 +3,7 @@ import pandas as pd
 import tkinter as tk
 from tkinter import messagebox
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, accuracy_score
-import seaborn as sns
+from sklearn.metrics import precision_score
 import matplotlib.pyplot as plt
 
 # Cargar los datos
@@ -80,27 +79,20 @@ def make_prediction():
 def evaluate_model():
     """
     Evalúa el modelo de vecino más cercano (KNN con k=1) en el conjunto de prueba y
-    muestra una matriz de confusión, así como la precisión del modelo.
+    muestra la precisión del modelo usando precision_score.
     """
-    y_pred = [predict(X_train, y_train, x_test) for x_test in X_test]  # Predicción en el conjunto de prueba
+    # Predicción en el conjunto de prueba
+    y_pred = [predict(X_train, y_train, x_test) for x_test in X_test]
 
-    # Convertimos los valores continuos a clases para construir la matriz de confusión
+    # Convertimos los valores continuos a clases basadas en percentiles
     y_pred_classes = np.digitize(y_pred, bins=np.percentile(y_train, [25, 50, 75]))
     y_test_classes = np.digitize(y_test, bins=np.percentile(y_train, [25, 50, 75]))
-    
-    # Crear matriz de confusión
-    cm = confusion_matrix(y_test_classes, y_pred_classes)
-    
-    # Calcular precisión
-    accuracy = accuracy_score(y_test_classes, y_pred_classes)
-    
-    # Mostrar matriz de confusión con seaborn
-    plt.figure(figsize=(6, 4))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['Q1', 'Q2', 'Q3', 'Q4'], yticklabels=['Q1', 'Q2', 'Q3', 'Q4'])
-    plt.ylabel('True Class')
-    plt.xlabel('Predicted Class')
-    plt.title(f'Matriz de Confusión - Precisión: {accuracy:.2f}')
-    plt.show()
+
+    # Calcular precisión usando precision_score
+    precision = precision_score(y_test_classes, y_pred_classes, average='weighted')
+
+    # Mostrar la precisión
+    messagebox.showinfo("Precisión del Modelo", f"La precisión del modelo es: {precision:.2f}")
 
 # Configuración de la interfaz gráfica con tkinter
 root = tk.Tk()
